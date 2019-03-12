@@ -168,6 +168,37 @@ public:
 			yd_[i] * (l - l_[i]) * (l - l_[i]) * (l - l_[i]);
 		return;
 	}
+    void OutPut(double &x, double &y, double &dx, double &dy, double &ddx, double &ddy, double &yaw, double &k, double t) {
+        int i;
+        double l = t * l_[l_.size() - 1];
+        for (i = 0; i < l_.size() - 1; ++i) {
+            if ((l_[i] <= l) && (l < l_[i + 1])) { break; }
+        }
+
+
+        x =
+            xa_[i] +
+            xb_[i] * (l - l_[i]) +
+            xc_[i] * (l - l_[i]) * (l - l_[i]) +
+            xd_[i] * (l - l_[i]) * (l - l_[i]) * (l - l_[i]);
+        y =
+            ya_[i] +
+            yb_[i] * (l - l_[i]) +
+            yc_[i] * (l - l_[i]) * (l - l_[i]) +
+            yd_[i] * (l - l_[i]) * (l - l_[i]) * (l - l_[i]);
+
+        dx = xb_[i] + 2 * xc_[i] * (l - l_[i]) + 3 * xd_[i] * (l - l_[i]) * (l - l_[i]);
+        dy = yb_[i] + 2 * yc_[i] * (l - l_[i]) + 3 * yd_[i] * (l - l_[i]) * (l - l_[i]);
+
+        ddx = 2 * xc_[i] + 6 * xd_[i] * (l - l_[i]);
+        ddy = 2 * yc_[i] + 6 * yd_[i] * (l - l_[i]);
+
+        yaw = atan2(dy, dx);
+
+        k = (ddy * dx - ddx * dy) / (dx * dx + dy * dy);
+
+        return;
+    }
 };
 
 #endif
